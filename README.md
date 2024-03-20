@@ -56,11 +56,11 @@ You will be asked to post the contents of these mails in your `shim-review` issu
 - Position: Staff Program Manager, Security Response
 - Email address: mijzerman@vmware.com
 - PGP: http://pgp.mit.edu/pks/lookup?op=vindex&search=0xC61F6A1D
+[NEED INFO]
 
 (Key should be signed by the other security contacts, pushed to a keyserver
 like keyserver.ubuntu.com, and preferably have signatures that are reasonably
 well known in the Linux community.)
-[NEED INFO]
 
 *******************************************************************************
 ### Who is the secondary contact for security updates, etc.?
@@ -69,11 +69,11 @@ well known in the Linux community.)
 - Position: Senior Security Program Manager
 - Email address: ehawkins@vmware.com
 - PGP: http://pgp.mit.edu/pks/lookup?op=vindex&search=0x405F7C6D
+[NEED INFO]
 
 (Key should be signed by the other security contacts, pushed to a keyserver
 like keyserver.ubuntu.com, and preferably have signatures that are reasonably
 well known in the Linux community.)
-[NEED INFO]
 
 *******************************************************************************
 ### Were these binaries created from the 15.8 shim release tar?
@@ -82,7 +82,7 @@ Please create your shim binaries starting with the 15.8 shim release tar file: h
 This matches https://github.com/rhboot/shim/releases/tag/15.8 and contains the appropriate gnu-efi source.
 
 *******************************************************************************
-Yes
+Yes.
 
 *******************************************************************************
 ### URL for a repo that contains the exact code which was built to get this binary:
@@ -93,7 +93,9 @@ https://github.com/vmware/photon/tree/5.0/SPECS/shim
 ### What patches are being applied and why:
 *******************************************************************************
 0001-Enforce-SBAT-presence-in-every-image.patch
+
 0001-Add-provision-to-disable-netboot-and-httpboot-in-shi.patch
+
 [NEED INFO]
 
 *******************************************************************************
@@ -102,6 +104,7 @@ https://github.com/vmware/photon/tree/5.0/SPECS/shim
 See https://techcommunity.microsoft.com/t5/hardware-dev-center/nx-exception-for-shim-community/ba-p/3976522 for more details on the signing of shim without NX bit.
 *******************************************************************************
 NX bit is not set.
+
 [NEED INFO]
 
 *******************************************************************************
@@ -158,6 +161,7 @@ The current builds include the `grub,3` fixes.
 The entry should look similar to: `grub,4,Free Software Foundation,grub,GRUB_UPSTREAM_VERSION,https://www.gnu.org/software/grub/`
 *******************************************************************************
 No, SBAT generation for grub is 3.
+
 `grub,3,Free Software Foundation,grub,2.06,https//www.gnu.org/software/grub/`
 
 *******************************************************************************
@@ -165,6 +169,7 @@ No, SBAT generation for grub is 3.
 ### Does your new chain of trust disallow booting old GRUB2 builds affected by the CVEs?
 *******************************************************************************
 No and Yes
+
 [NEED INFO]
 
 *******************************************************************************
@@ -185,13 +190,15 @@ are distinguished in,
 - VMware appliance-specific performance and/or security patches
 
 Our full patch list is here: https://github.com/vmware/photon/tree/5.0/SPECS/linux
+
 [DISCUSS]
 
 *******************************************************************************
 ### Do you use an ephemeral key for signing kernel modules?
 ### If not, please describe how you ensure that one kernel build does not load modules built for another kernel.
 *******************************************************************************
-Yes, build time generated ephemeral key. 
+Yes, build time generated ephemeral key.
+
 [DISCUSS; Module signing with photon_sb2020? Custom module loading with Secondary Keyring?]
 
 *******************************************************************************
@@ -238,7 +245,8 @@ For example, signing new kernel's variants, UKI, systemd-boot, new certs, new CA
 *******************************************************************************
 ### Do you use EV certificates as embedded certificates in the SHIM?
 *******************************************************************************
-No
+No.
+
 [NEED INFO; Is photon_sb2020 EV SSL cert?]
 
 *******************************************************************************
@@ -310,7 +318,7 @@ by secureboot signatures and SBAT verification.
 *******************************************************************************
 ### Does your SHIM load any loaders that support loading unsigned kernels (e.g. GRUB2)?
 *******************************************************************************
-No
+No.
 
 *******************************************************************************
 ### What kernel are you using? Which patches does it includes to enforce Secure Boot?
@@ -318,9 +326,13 @@ No
 Currenly we are using 6.1.79 but we frequently upgrade to latest upstream 6.1.x version. We also 
 configure kernel to lockdown with LOCK_DOWN_KERNEL_FORCE_INTEGRITY when UEFI Secure Boot enabled to 
 enforce SBAT and signature verification.
+
 [PATCH 1/3] kernel: lockdown when UEFI secure boot enabled
+
 [PATCH 2/3] Add .sbat section (in kernel image)
+
 [PATCH 3/3] Verify SBAT on kexec
+
 [DISCUSS]
 
 *******************************************************************************
