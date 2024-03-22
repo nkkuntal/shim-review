@@ -40,10 +40,7 @@ order to boot the Photon OS on any device using UEFI CA certificate for Secure B
 *******************************************************************************
 ### Why are you unable to reuse shim from another distro that is already signed?
 *******************************************************************************
-Photon OS is a customized operating system and optimized for VMware-specific appliances. We provide
-custom grub2, various Linux-based kernel flavors (RT, Secure) and other components. It is crucial
-that we support UEFI Secure Boot for our customers and hence require our own shim.
-[DISCUSS]
+Photon OS is a customized operating system and optimized for VMware-specific appliances. We provide our own grub2, kernels and modules that need to be authenticated by VMware CA. Therefore, we cannot use other distro's signed shim for supporting Secure Boot for our customers.
 
 *******************************************************************************
 ### Who is the primary contact for security updates, etc.?
@@ -56,6 +53,7 @@ You will be asked to post the contents of these mails in your `shim-review` issu
 - Position: Staff Program Manager, Security Response
 - Email address: mijzerman@vmware.com
 - PGP: http://pgp.mit.edu/pks/lookup?op=vindex&search=0xC61F6A1D
+
 [NEED INFO]
 
 (Key should be signed by the other security contacts, pushed to a keyserver
@@ -69,6 +67,7 @@ well known in the Linux community.)
 - Position: Senior Security Program Manager
 - Email address: ehawkins@vmware.com
 - PGP: http://pgp.mit.edu/pks/lookup?op=vindex&search=0x405F7C6D
+
 [NEED INFO]
 
 (Key should be signed by the other security contacts, pushed to a keyserver
@@ -92,11 +91,8 @@ https://github.com/vmware/photon/tree/5.0/SPECS/shim
 *******************************************************************************
 ### What patches are being applied and why:
 *******************************************************************************
-0001-Enforce-SBAT-presence-in-every-image.patch
-
-0001-Add-provision-to-disable-netboot-and-httpboot-in-shi.patch
-
-[NEED INFO]
+- 0001-Enforce-SBAT-presence-in-every-image.patch: Enforce .sbat section in every image (grub, kernel) booted by shim
+- 0001-Add-provision-to-disable-netboot-and-httpboot-in-shi.patch: Limit the boot capability to local disk and disable netboot, httpboot options
 
 *******************************************************************************
 ### Do you have the NX bit set in your shim? If so, is your entire boot stack NX-compatible and what testing have you done to ensure such compatibility?
@@ -166,11 +162,15 @@ No, SBAT generation for grub is 3.
 
 *******************************************************************************
 ### Were old shims hashes provided to Microsoft for verification and to be added to future DBX updates?
-### Does your new chain of trust disallow booting old GRUB2 builds affected by the CVEs?
 *******************************************************************************
-No and Yes
+No.
 
 [NEED INFO]
+
+*******************************************************************************
+### Does your new chain of trust disallow booting old GRUB2 builds affected by the CVEs?
+*******************************************************************************
+Yes.
 
 *******************************************************************************
 ### If your boot chain of trust includes a Linux kernel:
@@ -199,7 +199,7 @@ Our full patch list is here: https://github.com/vmware/photon/tree/5.0/SPECS/lin
 *******************************************************************************
 Yes, build time generated ephemeral key.
 
-[DISCUSS; Module signing with photon_sb2020? Custom module loading with Secondary Keyring?]
+[DISCUSS; If we have plan for Module signing with photon_sb2020 key, we can mention signing module with applicane keys endorsed by photon_sb2020 for trust-chain completion]
 
 *******************************************************************************
 ### If you use vendor_db functionality of providing multiple certificates and/or hashes please briefly describe your certificate setup.
@@ -230,7 +230,7 @@ This should include logs for creating the buildroots, applying patches, doing th
 ### What changes were made in the distro's secure boot chain since your SHIM was last signed?
 For example, signing new kernel's variants, UKI, systemd-boot, new certs, new CA, etc..
 *******************************************************************************
-[NEED INFO]
+Last signed Photon shim was 15.4 based. We now have latest upstream release v15.8 to fix security issues. We have also adapted latest 6.1.x kernel and Fedora based `grub-2.06`.
 
 *******************************************************************************
 ### What is the SHA256 hash of your final SHIM binary?
@@ -271,14 +271,7 @@ sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
 grub,3,Free Software Foundation,grub,2.06,https//www.gnu.org/software/grub/
 grub.photon,1,VMware Photon OS,grub2,2.06-16.ph5,https://github.com/vmware/photon
 ```
-
-systemd-boot
-```
-sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
-systemd,1,The systemd Developers,systemd,253,https://systemd.io/
-systemd.photon,1,VMware Photon OS,systemd,v253-3.ph5,https://github.com/vmware/photon/issues
-```
-[DISCUSS; Include revocations.efi?; systemd.photon URL?]
+[DISCUSS; Include revocations.efi?]
 
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader, which modules are built into your signed GRUB2 image?
@@ -288,12 +281,12 @@ systemd.photon,1,VMware Photon OS,systemd,v253-3.ph5,https://github.com/vmware/p
 *******************************************************************************
 ### If you are using systemd-boot on arm64 or riscv, is the fix for [unverified Devicetree Blob loading](https://github.com/systemd/systemd/security/advisories/GHSA-6m6p-rjcq-334c) included?
 *******************************************************************************
-[NEED INFO]
+No.
 
 *******************************************************************************
 ### What is the origin and full version number of your bootloader (GRUB2 or systemd-boot or other)?
 *******************************************************************************
-grub-2.06 from https://www.gnu.org/software/grub/
+grub-2.06 based on Fedora https://src.fedoraproject.org/rpms/grub2
 
 *******************************************************************************
 ### If your SHIM launches any other components, please provide further details on what is launched.
@@ -301,6 +294,7 @@ grub-2.06 from https://www.gnu.org/software/grub/
 SHIM launches signed grub2, then launches kernel. To handle future vulnerabilities, we include
 `revocations.efi`. It would be read by shim to update SbatLevel and revoke Photon kernel and
 grub.
+
 [DISCUSS]
 
 *******************************************************************************
@@ -311,9 +305,7 @@ GRUB2 will launch only linux kernel, no other component.
 *******************************************************************************
 ### How do the launched components prevent execution of unauthenticated code?
 *******************************************************************************
-grub2 verifies signatures on booted kernels via shim, all the other expected components are both verified 
-by secureboot signatures and SBAT verification.
-[DISCUSS]
+grub2 verifies signatures on booted kernels via shim. Kernel is compiled with LOCK_DOWN_KERNEL_FORCE_INTEGRITY when Secure Boot enabled and enforce signatures verifiaction. All modules and kernel images are signed.
 
 *******************************************************************************
 ### Does your SHIM load any loaders that support loading unsigned kernels (e.g. GRUB2)?
@@ -323,17 +315,11 @@ No.
 *******************************************************************************
 ### What kernel are you using? Which patches does it includes to enforce Secure Boot?
 *******************************************************************************
-Currenly we are using 6.1.79 but we frequently upgrade to latest upstream 6.1.x version. We also 
-configure kernel to lockdown with LOCK_DOWN_KERNEL_FORCE_INTEGRITY when UEFI Secure Boot enabled to 
-enforce SBAT and signature verification.
+Currenly we are using 6.1.79 but we frequently upgrade to latest upstream 6.1.x version. Following patches are included for Secure Boot and kernel lockdown,
 
-[PATCH 1/3] kernel: lockdown when UEFI secure boot enabled
-
-[PATCH 2/3] Add .sbat section (in kernel image)
-
-[PATCH 3/3] Verify SBAT on kexec
-
-[DISCUSS]
+- 0001-kernel-lockdown-when-UEFI-secure-boot-enabled.patch: Lockdown kernel to `integrity` when Secure Boot detected at boot time
+- 0002-Add-.sbat-section.patch: Insert `.sbat` section in kernel image
+- 0003-Verify-SBAT-on-kexec.patch: Validate `.sbat` section of kernel image when using fast-boot (kexec) along with signature
 
 *******************************************************************************
 ### Add any additional information you think we may need to validate this shim.
