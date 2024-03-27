@@ -163,9 +163,7 @@ No, SBAT generation for grub is 3.
 *******************************************************************************
 ### Were old shims hashes provided to Microsoft for verification and to be added to future DBX updates?
 *******************************************************************************
-No.
-
-[NEED INFO]
+No. Our shim `v15.4` is not revoked through DBX update but the one before that `v15` is revoked. We will invalidate current shim with SBAT generation upgrade and plan to provide hash to Microsoft once we have latest signed `shim-15.8`.
 
 *******************************************************************************
 ### Does your new chain of trust disallow booting old GRUB2 builds affected by the CVEs?
@@ -240,14 +238,12 @@ Last signed Photon shim was 15.4 based. We now have latest upstream release v15.
 *******************************************************************************
 ### How do you manage and protect the keys used in your SHIM?
 *******************************************************************************
-[NEED INFO]
+It is stored in HSMs which are operating in FIPS 140-2 Level 2 approved mode, only accessible by certain members of the build infrastructure team. They are located in physically secure areas of our datacenters.
 
 *******************************************************************************
 ### Do you use EV certificates as embedded certificates in the SHIM?
 *******************************************************************************
 No.
-
-[NEED INFO; Is photon_sb2020 EV SSL cert?]
 
 *******************************************************************************
 ### Do you add a vendor-specific SBAT entry to the SBAT section in each binary that supports SBAT metadata ( GRUB2, fwupd, fwupdate, systemd-boot, systemd-stub, UKI(s), shim + all child shim binaries )?
@@ -271,7 +267,7 @@ sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
 grub,3,Free Software Foundation,grub,2.06,https//www.gnu.org/software/grub/
 grub.photon,1,VMware Photon OS,grub2,2.06-16.ph5,https://github.com/vmware/photon
 ```
-[DISCUSS; Include revocations.efi?]
+[DISCUSS; Include revocations.efi?; grub.photon gen]
 
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader, which modules are built into your signed GRUB2 image?
