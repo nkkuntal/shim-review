@@ -51,10 +51,8 @@ You will be asked to post the contents of these mails in your `shim-review` issu
 *******************************************************************************
 - Name: Monty Ijzerman
 - Position: Staff Program Manager, Security Response
-- Email address: mijzerman@vmware.com
+- Email address: monty.ijzerman@broadcom.com
 - PGP: http://pgp.mit.edu/pks/lookup?op=vindex&search=0xC61F6A1D
-
-[NEED INFO]
 
 (Key should be signed by the other security contacts, pushed to a keyserver
 like keyserver.ubuntu.com, and preferably have signatures that are reasonably
@@ -65,10 +63,8 @@ well known in the Linux community.)
 *******************************************************************************
 - Name: Edward Hawkins
 - Position: Senior Security Program Manager
-- Email address: ehawkins@vmware.com
+- Email address: edward.hawkins@broadcom.com
 - PGP: http://pgp.mit.edu/pks/lookup?op=vindex&search=0x405F7C6D
-
-[NEED INFO]
 
 (Key should be signed by the other security contacts, pushed to a keyserver
 like keyserver.ubuntu.com, and preferably have signatures that are reasonably
