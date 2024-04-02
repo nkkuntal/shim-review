@@ -97,8 +97,6 @@ See https://techcommunity.microsoft.com/t5/hardware-dev-center/nx-exception-for-
 *******************************************************************************
 NX bit is not set.
 
-[NEED INFO]
-
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader what exact implementation of Secureboot in GRUB2 do you have? (Either Upstream GRUB2 shim_lock verifier or Downstream RHEL/Fedora/Debian/Canonical-like implementation)
 *******************************************************************************
@@ -172,20 +170,14 @@ Yes.
 ### Is upstream commit [75b0cea7bf307f362057cc778efe89af4c615354 "ACPI: configfs: Disallow loading ACPI tables when locked down"](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=75b0cea7bf307f362057cc778efe89af4c615354) applied?
 ### Is upstream commit [eadb2f47a3ced5c64b23b90fd2a3463f63726066 "lockdown: also lock down previous kgdb use"](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eadb2f47a3ced5c64b23b90fd2a3463f63726066) applied?
 *******************************************************************************
-All the above patches are applied to our kernel (6.1.79) and we frequently update to 
-latest upstream Linux kernel v6.1.x.
+All the above patches are applied to our kernel and we frequently update to latest upstream Linux kernel v6.1.x.
 
 *******************************************************************************
 ### Do you build your signed kernel with additional local patches? What do they do?
 *******************************************************************************
-Photon OS actively backports features and bugfixes from upstream Linux kernel. Majority of them
-are distinguished in,
-- Preempt RT kernel patches
-- VMware appliance-specific performance and/or security patches
+Photon OS actively backports features and bugfixes from upstream Linux kernel. We also have various VMware appliance-specific performance and security patches, and patches to enforce kernel lockdown when secure boot is enabled.
 
 Our full patch list is here: https://github.com/vmware/photon/tree/5.0/SPECS/linux
-
-[DISCUSS]
 
 *******************************************************************************
 ### Do you use an ephemeral key for signing kernel modules?
@@ -193,13 +185,11 @@ Our full patch list is here: https://github.com/vmware/photon/tree/5.0/SPECS/lin
 *******************************************************************************
 Yes, build time generated ephemeral key.
 
-[DISCUSS; If we have plan for Module signing with photon_sb2020 key, we can mention signing module with applicane keys endorsed by photon_sb2020 for trust-chain completion]
-
 *******************************************************************************
 ### If you use vendor_db functionality of providing multiple certificates and/or hashes please briefly describe your certificate setup.
 ### If there are allow-listed hashes please provide exact binaries for which hashes are created via file sharing service, available in public with anonymous access for verification.
 *******************************************************************************
-We don't use this.
+We don't use this. Our shim trusts photon_sb2020.der certificate from this repo.
 
 *******************************************************************************
 ### If you are re-using a previously used (CA) certificate, you will need to add the hashes of the previous GRUB2 binaries exposed to the CVEs to vendor_dbx in shim in order to prevent GRUB2 from being able to chainload those older GRUB2 binaries. If you are changing to a new (CA) certificate, this does not apply.
@@ -234,7 +224,7 @@ Last signed Photon shim was 15.4 based. We now have latest upstream release v15.
 *******************************************************************************
 ### How do you manage and protect the keys used in your SHIM?
 *******************************************************************************
-It is stored in HSMs which are operating in FIPS 140-2 Level 2 approved mode, only accessible by certain members of the build infrastructure team. They are located in physically secure areas of our datacenters.
+It is stored in HSMs which are operating in FIPS 140-2 level 2 approved mode, only accessible by certain members of the build infrastructure team. They are located in physically secure areas of our datacenters.
 
 *******************************************************************************
 ### Do you use EV certificates as embedded certificates in the SHIM?
@@ -268,7 +258,11 @@ grub.photon,1,VMware Photon OS,grub2,2.06-16.ph5,https://github.com/vmware/photo
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader, which modules are built into your signed GRUB2 image?
 *******************************************************************************
-[NEED INFO]
+```
+fat iso9660 part_gpt part_msdos normal boot linux configfile loopback chain efifwsetup efi_gop efi_uga ls search search_label search_fs_uuid search_fs_file gfxterm gfxterm_background gfxterm_menu test all_video loadenv exfat ext2 udf halt gfxmenu png tga lsefi help probe echo lvm
+```
+
+[ VERIFY; from `grub2-mkimage` https://github.com/vmware/photon/blob/5.0/SPECS/grub2/grub2.spec#L182 ]
 
 *******************************************************************************
 ### If you are using systemd-boot on arm64 or riscv, is the fix for [unverified Devicetree Blob loading](https://github.com/systemd/systemd/security/advisories/GHSA-6m6p-rjcq-334c) included?
@@ -283,11 +277,7 @@ grub-2.06 based on Fedora https://src.fedoraproject.org/rpms/grub2
 *******************************************************************************
 ### If your SHIM launches any other components, please provide further details on what is launched.
 *******************************************************************************
-SHIM launches signed grub2, then launches kernel. To handle future vulnerabilities, we include
-`revocations.efi`. It would be read by shim to update SbatLevel and revoke Photon kernel and
-grub.
-
-[DISCUSS]
+SHIM only launches signed grub2. To handle future vulnerabilities, we include `revocations.efi`. It would be read by shim to update SbatLevel and revoke Photon kernel and grub.
 
 *******************************************************************************
 ### If your GRUB2 or systemd-boot launches any other binaries that are not the Linux kernel in SecureBoot mode, please provide further details on what is launched and how it enforces Secureboot lockdown.
@@ -307,13 +297,14 @@ No.
 *******************************************************************************
 ### What kernel are you using? Which patches does it includes to enforce Secure Boot?
 *******************************************************************************
-Currenly we are using 6.1.79 but we frequently upgrade to latest upstream 6.1.x version. Following patches are included for Secure Boot and kernel lockdown,
+We frequently upgrade to latest Linux upstream 6.1.x version. Following patches are included for Secure Boot and kernel lockdown,
 
 - 0001-kernel-lockdown-when-UEFI-secure-boot-enabled.patch: Lockdown kernel to `integrity` when Secure Boot detected at boot time
 - 0002-Add-.sbat-section.patch: Insert `.sbat` section in kernel image
 - 0003-Verify-SBAT-on-kexec.patch: Validate `.sbat` section of kernel image when using fast-boot (kexec) along with signature
 
+These patches can be found here: https://github.com/vmware/photon/tree/5.0/SPECS/linux/generic
+
 *******************************************************************************
 ### Add any additional information you think we may need to validate this shim.
 *******************************************************************************
-[NEED INFO]
