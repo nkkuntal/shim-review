@@ -89,6 +89,7 @@ https://github.com/vmware/photon/tree/5.0/SPECS/shim
 *******************************************************************************
 - 0001-Enforce-SBAT-presence-in-every-image.patch: Enforce .sbat section in every image (grub, kernel) booted by shim
 - 0001-Add-provision-to-disable-netboot-and-httpboot-in-shi.patch: Limit the boot capability to local disk and disable netboot, httpboot options
+- 0001-Introduce-support-for-revocations-build.patch: Include bare-bones code to generate `revocations.efi` (.sbata and .sbatl would be added later)
 
 *******************************************************************************
 ### Do you have the NX bit set in your shim? If so, is your entire boot stack NX-compatible and what testing have you done to ensure such compatibility?
@@ -144,20 +145,18 @@ We use upstream grub2 (2.06~rc1) shim_lock verifier.
   * CVE-2023-4693
   * CVE-2023-4692
 *******************************************************************************
-The current builds include the `grub,3` fixes.
+The current builds include the `grub,4` fixes.
 
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader, and if these fixes have been applied, is the upstream global SBAT generation in your GRUB2 binary set to 4?
 The entry should look similar to: `grub,4,Free Software Foundation,grub,GRUB_UPSTREAM_VERSION,https://www.gnu.org/software/grub/`
 *******************************************************************************
-No, SBAT generation for grub is 3.
-
-`grub,3,Free Software Foundation,grub,2.06,https//www.gnu.org/software/grub/`
+Yes.
 
 *******************************************************************************
 ### Were old shims hashes provided to Microsoft for verification and to be added to future DBX updates?
 *******************************************************************************
-No. Our shim `v15.4` is not revoked through DBX update but the one before that `v15` is revoked. We will invalidate current shim with SBAT generation upgrade and plan to provide hash to Microsoft once we have latest signed `shim-15.8`.
+No. Our `shim-v15.4` is not revoked through DBX update but the one before that `shim-v15` is revoked. We will invalidate current shim with SBAT generation upgrade and plan to provide hash to Microsoft once we ship the latest signed `shim-v15.8`.
 
 *******************************************************************************
 ### Does your new chain of trust disallow booting old GRUB2 builds affected by the CVEs?
@@ -196,7 +195,7 @@ We don't use this. Our shim trusts photon_sb2020.der certificate from this repo.
 ### Please describe your strategy.
 *******************************************************************************
 SBAT generation upgrade will handle revocation of older binaries. shim SBAT is upgraded
-from 1 to 4 and grub2 SBAT is upgraded from 1 to 3.
+from 1 to 4 and grub2 SBAT is upgraded from 1 to 4.
 
 *******************************************************************************
 ### What OS and toolchain must we use to reproduce this build?  Include where to find it, etc.  We're going to try to reproduce your build as closely as possible to verify that it's really a build of the source tree you tell us it is, so these need to be fairly thorough. At the very least include the specific versions of gcc, binutils, and gnu-efi which were used, and where to find those binaries.
@@ -219,7 +218,10 @@ Last signed Photon shim was 15.4 based. We now have latest upstream release v15.
 *******************************************************************************
 ### What is the SHA256 hash of your final SHIM binary?
 *******************************************************************************
-[NEED INFO]
+```
+$ sha256sum shimx64.efi
+3c644e2d1f4449fa761c540615f2b59178639ae2fa74c493de71b951afc80e11  shimx64.efi
+```
 
 *******************************************************************************
 ### How do you manage and protect the keys used in your SHIM?
@@ -250,17 +252,14 @@ shim.photon,1,VMware Photon OS,shim,15.8-1.ph5,https://github.com/vmware/photon
 grub2
 ```
 sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
-grub,3,Free Software Foundation,grub,2.06,https//www.gnu.org/software/grub/
-grub.photon,1,VMware Photon OS,grub2,2.06-16.ph5,https://github.com/vmware/photon
+grub,4,Free Software Foundation,grub,2.06,https//www.gnu.org/software/grub/
+grub.photon,2,VMware Photon OS,grub2,2.06-16.ph5,https://github.com/vmware/photon
 ```
-[DISCUSS; Include revocations.efi?; grub.photon gen]
 
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader, which modules are built into your signed GRUB2 image?
 *******************************************************************************
-```
 fat iso9660 part_gpt part_msdos normal boot linux configfile loopback chain efifwsetup efi_gop efi_uga ls search search_label search_fs_uuid search_fs_file gfxterm gfxterm_background gfxterm_menu test all_video loadenv exfat ext2 udf halt gfxmenu png tga lsefi help probe echo lvm
-```
 
 [ VERIFY; from `grub2-mkimage` https://github.com/vmware/photon/blob/5.0/SPECS/grub2/grub2.spec#L182 ]
 
@@ -287,7 +286,7 @@ GRUB2 will launch only linux kernel, no other component.
 *******************************************************************************
 ### How do the launched components prevent execution of unauthenticated code?
 *******************************************************************************
-grub2 verifies signatures on booted kernels via shim. Kernel is compiled with LOCK_DOWN_KERNEL_FORCE_INTEGRITY when Secure Boot enabled and enforce signatures verifiaction. All modules and kernel images are signed.
+grub2 verifies signatures on booted kernels via shim. Kernel is compiled with LOCK_DOWN_KERNEL_FORCE_INTEGRITY when Secure Boot enabled and enforce signatures verification. All modules and kernel images are signed.
 
 *******************************************************************************
 ### Does your SHIM load any loaders that support loading unsigned kernels (e.g. GRUB2)?
