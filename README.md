@@ -209,7 +209,10 @@ from 1 to 4 and grub2 SBAT is upgraded from 1 to 4.
 ### Which files in this repo are the logs for your build?
 This should include logs for creating the buildroots, applying patches, doing the build, creating the archives, etc.
 *******************************************************************************
-[NEED INFO]
+`build.log` file contains build logs. It was produced with following command.
+```
+docker build --progress=plain -t shim-image . --no-cache &>build.log
+```
 
 *******************************************************************************
 ### What changes were made in the distro's secure boot chain since your SHIM was last signed?
@@ -263,8 +266,6 @@ grub.photon,2,VMware Photon OS,grub2,2.06-16.ph5,https://github.com/vmware/photo
 *******************************************************************************
 fat iso9660 part_gpt part_msdos normal boot linux configfile loopback chain efifwsetup efi_gop efi_uga ls search search_label search_fs_uuid search_fs_file gfxterm gfxterm_background gfxterm_menu test all_video loadenv exfat ext2 udf halt gfxmenu png tga lsefi help probe echo lvm
 
-[ VERIFY; from `grub2-mkimage` https://github.com/vmware/photon/blob/5.0/SPECS/grub2/grub2.spec#L182 ]
-
 *******************************************************************************
 ### If you are using systemd-boot on arm64 or riscv, is the fix for [unverified Devicetree Blob loading](https://github.com/systemd/systemd/security/advisories/GHSA-6m6p-rjcq-334c) included?
 *******************************************************************************
@@ -309,3 +310,4 @@ These patches can be found here: https://github.com/vmware/photon/tree/5.0/SPECS
 *******************************************************************************
 ### Add any additional information you think we may need to validate this shim.
 *******************************************************************************
+Previous version, based on shim 15.4, was approved here https://github.com/rhboot/shim-review/issues/164
