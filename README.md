@@ -23,7 +23,7 @@ Here's the template:
 *******************************************************************************
 ### What organization or people are asking to have this signed?
 *******************************************************************************
-VMware, https://www.vmware.com/
+VMware by Broadcom, https://www.vmware.com/
 
 *******************************************************************************
 ### What product or service is this for?
@@ -101,7 +101,9 @@ NX bit is not set.
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader what exact implementation of Secureboot in GRUB2 do you have? (Either Upstream GRUB2 shim_lock verifier or Downstream RHEL/Fedora/Debian/Canonical-like implementation)
 *******************************************************************************
-We use upstream grub2 (2.06~rc1) shim_lock verifier.
+We use downstream Fedora-based GRUB2.
+
+Source - https://github.com/vmware/photon/tree/5.0/SPECS/grub2
 
 *******************************************************************************
 ### If shim is loading GRUB2 bootloader and your previously released shim booted a version of GRUB2 affected by any of the CVEs in the July 2020, the March 2021, the June 7th 2022, the November 15th 2022, or 3rd of October 2023 GRUB2 CVE list, have fixes for all these CVEs been applied?
