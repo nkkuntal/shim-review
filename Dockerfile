@@ -22,7 +22,7 @@ RUN ls -l /shimx64.efi /usr/share/shim/shimx64.efi
 
 RUN sha256sum /shimx64.efi /usr/share/shim/shimx64.efi
 
-RUN objdump -sj .sbat /usr/share/shim/shimx64.efi
+RUN objcopy --only-section .sbat -O binary /usr/share/shim/shimx64.efi /dev/stdout
 
 RUN hexdump -Cv /shimx64.efi > orig && \
     hexdump -Cv /usr/share/shim/shimx64.efi > build && \

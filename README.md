@@ -50,7 +50,7 @@ You will be asked to post the contents of these mails in your `shim-review` issu
 *******************************************************************************
 - Name: Monty Ijzerman
 - Position: Staff Program Manager, Security Response
-- Email address: monty.ijzerman@broadcom.com
+- Email address: mijzerman@vmware.com
 - PGP: http://pgp.mit.edu/pks/lookup?op=vindex&search=0xC61F6A1D
 
 (Key should be signed by the other security contacts, pushed to a keyserver
@@ -62,7 +62,7 @@ well known in the Linux community.)
 *******************************************************************************
 - Name: Edward Hawkins
 - Position: Senior Security Program Manager
-- Email address: edward.hawkins@broadcom.com
+- Email address: ehawkins@vmware.com
 - PGP: http://pgp.mit.edu/pks/lookup?op=vindex&search=0x405F7C6D
 
 (Key should be signed by the other security contacts, pushed to a keyserver
@@ -88,7 +88,7 @@ Make sure that you've verified that your build process uses that file as a sourc
 
 A short guide on verifying public keys and signatures should be available in the [docs](./docs/) directory.
 *******************************************************************************
-Yes.
+Yes, we also verify `sha512sum` of shim tar file in our SPEC file.
 
 *******************************************************************************
 ### URL for a repo that contains the exact code which was built to result in your binary:
@@ -104,7 +104,7 @@ Mention all the external patches and build process modifications, which are used
 *******************************************************************************
 - 0001-Enforce-SBAT-presence-in-every-image.patch: Enforce .sbat section in every image (grub, kernel) booted by shim
 - 0001-Add-provision-to-disable-netboot-and-httpboot-in-shi.patch: Limit the boot capability to local disk and disable netboot, httpboot options
-- 0001-Introduce-support-for-revocations-build.patch: Include bare-bones code to generate `revocations.efi` (.sbata and .sbatl would be added later)
+- 0001-Introduce-support-for-revocations-build.patch: Include bare-bones code to generate `revocations.efi` (.sbata and .sbatl will be added/updated in revocations.efi on every revocation event post shim signing)
 
 *******************************************************************************
 ### Do you have the NX bit set in your shim? If so, is your entire boot stack NX-compatible and what testing have you done to ensure such compatibility?
@@ -305,7 +305,7 @@ fat iso9660 part_gpt part_msdos normal boot linux configfile loopback chain efif
 *******************************************************************************
 ### If you are using systemd-boot on arm64 or riscv, is the fix for [unverified Devicetree Blob loading](https://github.com/systemd/systemd/security/advisories/GHSA-6m6p-rjcq-334c) included?
 *******************************************************************************
-No.
+`N/A`
 
 *******************************************************************************
 ### What is the origin and full version number of your bootloader (GRUB2 or systemd-boot or other)?
