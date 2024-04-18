@@ -2,7 +2,16 @@
 FROM photon:5.0-20240331
 
 # Install build tools and setup
-RUN tdnf install -q -y wget build-essential util-linux dos2unix rpm-build
+RUN tdnf install --repo=photon -q -y wget-1.21.3-4.ph5 \
+                                     binutils-2.39-7.ph5 \
+                                     dos2unix-7.4.3-2.ph5 \
+                                     gcc-12.2.0-2.ph5 \
+                                     make-4.3-2.ph5 \
+                                     glibc-devel-2.36-10.ph5 \
+                                     rpm-build-4.18.2-2.ph5 \
+                                     linux-api-headers-6.1.79-1.ph5 \
+                                     diffutils-3.8-2.ph5 \
+                                     util-linux-2.38-4.ph5
 
 COPY shimx64.efi /
 COPY rpmmacros /root/.rpmmacros
