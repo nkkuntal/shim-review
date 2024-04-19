@@ -349,4 +349,5 @@ These patches can be found here: https://github.com/vmware/photon/tree/5.0/SPECS
 *******************************************************************************
 ### Add any additional information you think we may need to validate this shim signing application.
 *******************************************************************************
-Previous version, based on shim 15.4, was approved here https://github.com/rhboot/shim-review/issues/164
+- shim patches: https://github.com/vmware/photon/tree/5.0/SPECS/shim/vmw
+- grub patches: https://github.com/vmware/photon/tree/5.0/SPECS/grub2
